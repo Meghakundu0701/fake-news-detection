@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake News Detector - Fake News & Rhetoric Intelligence Scanner</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Main StyleSheet -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="glow-bg"></div>
+    
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-logo">
+                <div class="logo-icon">
+                    <i data-lucide="shield-alert" class="icon-glow"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>Fake News <span>Detector</span></h1>
+                    <p>News Integrity & Rhetoric Analysis Dashboard</p>
+                </div>
+            </div>
+            <div class="header-tabs">
+                <button id="tab-hub" class="tab-btn">
+                    <i data-lucide="cpu"></i>
+                    <span>Training Hub</span>
+                </button>
+            </div>
+            <div class="system-status">
+                <span class="status-dot online"></span>
+                <span id="status-model-name" class="status-text">Model loading...</span>
+            </div>
+        </header>
+
+        <!-- Main Dashboard Content -->
+        <main id="scanner-view" class="dashboard-grid">
+            
+            <!-- Left Panel: Input & Controls -->
+            <section class="input-panel glass-card">
+                <div class="card-header">
+                    <i data-lucide="edit-3"></i>
+                    <h2>Article Analysis Portal</h2>
+                </div>
+                
+                <div class="input-group">
+                    <label for="article-title">Article Title <span class="optional">(Optional but recommended for bi-gram detection)</span></label>
+                    <input type="text" id="article-title" placeholder="Paste the news headline or article title here..." autocomplete="off">
+                </div>
+
+                <div class="input-group">
+                    <label for="article-text">Article Body Text</label>
+                    <textarea id="article-text" placeholder="Paste the full article content here to scan for misinformation and emotional manipulation..."></textarea>
+                </div>
+
+                <div class="action-bar">
+                    <button id="btn-analyze" class="btn btn-primary">
+                        <i data-lucide="cpu"></i>
+                        <span>Run Full Diagnostic</span>
+                    </button>
+                    <button id="btn-clear" class="btn btn-secondary">
+                        <i data-lucide="rotate-ccw"></i>
+                    </button>
+                </div>
+
+                <!-- Sample Articles Section -->
+                <div class="samples-section">
+                    <h3><i data-lucide="list-video"></i> Load Test Case Samples</h3>
+                    <div class="sample-buttons">
+                        <button class="sample-btn" data-sample="real-science">
+                            <span class="badge badge-real">Real</span> Factual Science News
+                        </button>
+                        <button class="sample-btn" data-sample="fake-conspiracy">
+                            <span class="badge badge-fake">Fake</span> Conspiracy Rumor
+                        </button>
+                        <button class="sample-btn" data-sample="real-emotional">
+                            <span class="badge badge-real">Real</span> Sensational Politics
+                        </button>
+                    </div>
+                </div>
+
+                <!-- History Section -->
+                <div class="history-section">
+                    <h3><i data-lucide="history"></i> Scanning Session Logs</h3>
+                    <div id="history-list" class="history-list">
+                        <p class="empty-text">No scans in this session yet.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel: Results & Explainable AI -->
+            <section class="results-panel">
+                
+                <!-- Welcome Card (shown before search) -->
+                <div id="welcome-card" class="welcome-card glass-card">
+                    <i data-lucide="fingerprint" class="welcome-fingerprint"></i>
+                    <h2>Ready for Diagnostic Scan</h2>
+                    <p>Enter an article headline and text on the left, or load one of the standard test cases to evaluate the AI classification, linguistic feature attribution, and emotional manipulation patterns.</p>
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <i data-lucide="check-circle" class="feat-icon text-real"></i>
+                            <span><strong>misinformation Risk:</strong> Linear Support Vector Classifier</span>
+                        </div>
+                        <div class="feature-item">
+                            <i data-lucide="heart" class="feat-icon text-warn"></i>
+                            <span><strong>Persuasion Analysis:</strong> Fear, Rage, and Clickbait detectors</span>
+                        </div>
+                        <div class="feature-item">
+                            <i data-lucide="eye" class="feat-icon text-info"></i>
+                            <span><strong>Explainable AI:</strong> Mathematical word-attribution highlights</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Results (hidden initially) -->
+                <div id="results-dashboard" class="results-dashboard hide">
+                    
+                    <!-- Row 1: Primary Metrics Grid -->
+                    <div class="metrics-grid">
+                        
+                        <!-- Metric 1: Credibility Gauge -->
+                        <div class="metric-card glass-card align-center">
+                            <div class="card-header-compact">
+                                <h3>Credibility Diagnostic</h3>
+                            </div>
+                            <div class="gauge-container">
+                                <svg class="gauge-ring" width="160" height="160">
+                                    <circle class="gauge-ring-bg" cx="80" cy="80" r="70"></circle>
+                                    <circle id="gauge-progress" class="gauge-ring-val" cx="80" cy="80" r="70"></circle>
+                                </svg>
+                                <div class="gauge-text">
+                                    <span id="credibility-value">0%</span>
+                                    <label id="credibility-label">Evaluating</label>
+                                </div>
+                            </div>
+                            <div class="credibility-details">
+                                <span id="verdict-badge" class="badge">FAKE</span>
+                                <span id="confidence-text">Model Confidence: 0%</span>
+                            </div>
+                        </div>
+
+                        <!-- Metric 2: Emotion Manipulation Scans -->
+                        <div class="metric-card glass-card">
+                            <div class="card-header-compact">
+                                <h3>Rhetoric & Emotional Manipulation</h3>
+                            </div>
+                            <div class="emotions-list">
+                                <div class="emotion-bar-item">
+                                    <div class="emotion-info">
+                                        <span>Clickbait & Headline Hook</span>
+                                        <span id="score-clickbait" class="emotion-val">0%</span>
+                                    </div>
+                                    <div class="progress-track">
+                                        <div id="bar-clickbait" class="progress-fill clickbait-color" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                                <div class="emotion-bar-item">
+                                    <div class="emotion-info">
+                                        <span>Fear-mongering / Scare Tactics</span>
+                                        <span id="score-fear" class="emotion-val">0%</span>
+                                    </div>
+                                    <div class="progress-track">
+                                        <div id="bar-fear" class="progress-fill fear-color" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                                <div class="emotion-bar-item">
+                                    <div class="emotion-info">
+                                        <span>Rage Bait / Outrage Induction</span>
+                                        <span id="score-rage" class="emotion-val">0%</span>
+                                    </div>
+                                    <div class="progress-track">
+                                        <div id="bar-rage" class="progress-fill rage-color" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                                <div class="emotion-bar-item">
+                                    <div class="emotion-info">
+                                        <span>Sensationalism / Exaggeration</span>
+                                        <span id="score-sensationalism" class="emotion-val">0%</span>
+                                    </div>
+                                    <div class="progress-track">
+                                        <div id="bar-sensationalism" class="progress-fill sensationalism-color" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Explainable AI Highlight Viewer -->
+                    <div class="glass-card xai-viewer-card">
+                        <div class="card-header flex-between">
+                            <div class="header-title-group">
+                                <i data-lucide="eye"></i>
+                                <h2>Explainable AI (XAI) Word Attribution Map</h2>
+                            </div>
+                            <div class="xai-legends">
+                                <label class="legend-item">
+                                    <input type="checkbox" id="chk-show-real" checked>
+                                    <span class="legend-dot real-dot"></span>
+                                    <span>Real Indicators</span>
+                                </label>
+                                <label class="legend-item">
+                                    <input type="checkbox" id="chk-show-fake" checked>
+                                    <span class="legend-dot fake-dot"></span>
+                                    <span>Fake Indicators</span>
+                                </label>
+                                <label class="legend-item">
+                                    <input type="checkbox" id="chk-show-emotions" checked>
+                                    <span class="legend-dot emotion-dot"></span>
+                                    <span>Emotion Triggers</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="xai-instructions">
+                            <i data-lucide="info"></i>
+                            <span>Hover over highlighted words to see their classification weights or rhetorical emotion labels.</span>
+                        </div>
+                        <div class="highlighted-content-container">
+                            <h3 id="rendered-title" class="rendered-title"></h3>
+                            <div id="highlighted-text" class="highlighted-text"></div>
+                        </div>
+                    </div>
+
+                    <!-- Row 3: Details Grid -->
+                    <div class="details-grid">
+                        
+                        <!-- Explainable AI Top Predictors Chart -->
+                        <div class="glass-card details-card">
+                            <div class="card-header">
+                                <i data-lucide="bar-chart-3"></i>
+                                <h2>Top Feature Attributions</h2>
+                            </div>
+                            <div class="predictors-container">
+                                <div class="predictor-list-column">
+                                    <h4 class="text-real"><i data-lucide="arrow-up-right"></i> Supports REAL Verdict</h4>
+                                    <div id="real-predictors" class="predictor-list"></div>
+                                </div>
+                                <div class="predictor-divider"></div>
+                                <div class="predictor-list-column">
+                                    <h4 class="text-fake"><i data-lucide="arrow-down-left"></i> Supports FAKE Verdict</h4>
+                                    <div id="fake-predictors" class="predictor-list"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Linguistic Stats -->
+                        <div class="glass-card details-card">
+                            <div class="card-header">
+                                <i data-lucide="database"></i>
+                                <h2>Text Metrics & Statistics</h2>
+                            </div>
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <span class="stat-icon"><i data-lucide="text-quote"></i></span>
+                                    <div class="stat-data">
+                                        <span id="stat-word-count" class="stat-number">0</span>
+                                        <label class="stat-label">Word Count</label>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <span class="stat-icon"><i data-lucide="clock"></i></span>
+                                    <div class="stat-data">
+                                        <span id="stat-read-time" class="stat-number">0 min</span>
+                                        <label class="stat-label">Est. Read Time</label>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <span class="stat-icon"><i data-lucide="shuffle"></i></span>
+                                    <div class="stat-data">
+                                        <span id="stat-diversity" class="stat-number">0%</span>
+                                        <label class="stat-label">Lexical Diversity</label>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <span class="stat-icon"><i data-lucide="hash"></i></span>
+                                    <div class="stat-data">
+                                        <span id="stat-char-count" class="stat-number">0</span>
+                                        <label class="stat-label">Character Count</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+        </main>
+        
+        <!-- Model Training Hub Content (hidden initially) -->
+        <main id="hub-view" class="dashboard-grid hide">
+            <!-- Left Panel: Training Parameters & CSV Upload -->
+            <section class="input-panel glass-card">
+                <div class="card-header">
+                    <i data-lucide="settings"></i>
+                    <h2>Retraining Controls</h2>
+                </div>
+                
+                <!-- CSV Upload Box -->
+                <div class="input-group">
+                    <label>Upload Dataset (CSV)</label>
+                    <div id="drop-zone" class="drop-zone">
+                        <i data-lucide="upload-cloud" class="upload-icon"></i>
+                        <p>Drag & drop your CSV file here or <span class="browse-link">browse</span></p>
+                        <input type="file" id="dataset-file" accept=".csv" style="display: none;">
+                    </div>
+                </div>
+
+                <!-- Dataset Preview Card (hidden initially) -->
+                <div id="dataset-preview" class="dataset-preview-card hide">
+                    <h4><i data-lucide="file-spreadsheet"></i> Dataset Analysis</h4>
+                    <div class="preview-stats">
+                        <div class="preview-stat-item">
+                            <span id="preview-row-count" class="preview-stat-num">0</span>
+                            <label>Total Rows</label>
+                        </div>
+                        <div class="preview-stat-item">
+                            <span id="preview-real-count" class="preview-stat-num">0</span>
+                            <label>Real News</label>
+                        </div>
+                        <div class="preview-stat-item">
+                            <span id="preview-fake-count" class="preview-stat-num">0</span>
+                            <label>Fake News</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-bar">
+                    <button id="btn-retrain" class="btn btn-primary" disabled>
+                        <i data-lucide="play-circle"></i>
+                        <span>Initiate Retraining</span>
+                    </button>
+                    <button id="btn-reset-model" class="btn btn-secondary">
+                        <i data-lucide="trash-2"></i>
+                        <span>Reset to Default</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Right Panel: Model Metrics & Terminal Logs -->
+            <section class="results-panel flex-column gap-24">
+                <!-- Model Metrics Grid -->
+                <div class="metrics-grid">
+                    <div class="metric-card glass-card">
+                        <div class="card-header-compact">
+                            <h3>Current Model Accuracy</h3>
+                        </div>
+                        <div class="metric-value-container">
+                            <span id="hub-model-accuracy" class="metric-big-value">--%</span>
+                        </div>
+                    </div>
+                    <div class="metric-card glass-card">
+                        <div class="card-header-compact">
+                            <h3>Vocabulary / Features</h3>
+                        </div>
+                        <div class="metric-value-container">
+                            <span id="hub-model-vocab" class="metric-big-value">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Terminal Logs -->
+                <div class="glass-card terminal-card flex-grow">
+                    <div class="card-header flex-between">
+                        <div class="header-title-group">
+                            <i data-lucide="terminal"></i>
+                            <h2>Training Pipeline Logs</h2>
+                        </div>
+                        <button id="btn-clear-terminal" class="btn btn-small-secondary">Clear Logs</button>
+                    </div>
+                    <div id="terminal-console" class="terminal-console">
+                        <div class="terminal-line system-line">> System initialized. Ready for training task...</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Tooltip Overlay -->
+    <div id="xai-tooltip" class="xai-tooltip hide"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+{
+  "accuracy": 98.43,
+  "vocab_size": 10000,
+  "dataset_size": 45757,
+  "last_trained": "2026-06-17 18:01:06",
+  "dataset_file": "news 1.csv"
+}
